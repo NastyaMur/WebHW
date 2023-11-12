@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "",
   "scripts": {
-      "test": "mocha ./task2/src",
+      "test": "mocha ./task3/src",
       "prepare": "husky install",
       "prettier": "prettier -w .",
       "prettier:check": "prettier -c ."
