@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DurDOM</title>
+    <link rel="stylesheet" href="./src/styles.css">
+    <link rel ="stylesheet" href ="./src/normalize.css">
+</head>
+<body>
+    <div class="header">
+        <p>6408 Анастасия Муравьева</p>
+        <div>
+            <button class="setup">Засетапить дефолтные значения</button>
+        </div>
+    </div>
+    <div class="main-page">
+        <div class="main-page form-container">
+            <h2>Форма добавления товаров</h2>
+            <form class="main-page add-form">
+                <input type="text" placeholder="Название" id="title">
+                <input type="text" placeholder="Ссылка на изображение" id="img">
+                <textarea placeholder="Описание" id="body"></textarea>
+                <input type="text" placeholder="Код товара" id="id">
+                <input type="text" placeholder="Поставщик" id="provider">
+                <button class="add-button">Добавить</button>
+            </form>
+        </div>
+        <div class="main-page_cards">
+
+        </div>
+    </div>
+    <script type="module" src = "./src/index.js"></script>
+</body>
+</html>
