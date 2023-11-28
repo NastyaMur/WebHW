@@ -1,0 +1,17 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "Firt item",
+      "body": "Крутой айтем",
+      "img": "https://sun9-9.userapi.com/impg/0sALSBNn1UiE2p2x1Fw68lL4M56hxISRHjlhUQ/I74shcNHPTo.jpg?size=500x471&quality=95&sign=f8b7fbdf7b50cec1538266e4ab4c4f8b&type=album",
+      "code": "1",
+      "provider": "ООО ТрансОбщажный сервис"
+    }
+  ],
+  "creatorInfo": {
+    "name": "Анастасия Муравьева",
+    "group": "6408",
+    "repo": "https://github.com/NastyaMur"
+  }
+}
