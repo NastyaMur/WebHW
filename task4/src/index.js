@@ -1,36 +1,67 @@
 let isEdit = false;
 const cardsContainer = window.document.querySelector(".main-page_cards");
+const loaderContainer = document.querySelector('.loader-container');
+function getInfo(){
+  return fetch('http://localhost:3000/creatorInfo').then((res) => res.json()).catch((e) => console.error(e));
+}
 function getCard(id){
-  return fetch(`http://localhost:3000/items/${id}`).then((res) => res.json())
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return fetch(`http://localhost:3000/items/${id}`).then((res) => {
+    loaderContainer.style.display = 'none';
+    return res.json()})
 }
 function getCards(){
-  return fetch('http://localhost:3000/items').then((res) => res.json())
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return fetch('http://localhost:3000/items').then((res) => {
+    loaderContainer.style.display = 'none';
+    return res.json()}
+    )
 }
 function createCard(data){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
   return fetch('http://localhost:3000/items', {
     method:'POST',
     headers: {
       'Content-Type': 'application/json; charset=UTF-8'
   },
   body:JSON.stringify(data)
-  }).then((res) => res.json()).catch((e) => console.error(e));
+  }).then((res) => {
+    loaderContainer.style.display = 'none';
+    return res.json()}).catch((e) => console.error(e));
 }
 function deleteCard(id){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
   return fetch(`http://localhost:3000/items/${id}`,{
     method: 'DELETE'
-  }).catch((e) => console.error(e));
+  }).then(() => loaderContainer.style.display = 'none').catch((e) => console.error(e));
 }
 function editCard(data){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
   return fetch(`http://localhost:3000/items/${data.id}`, {
     method:'PATCH',
     headers: {
       'Content-Type': 'application/json; charset=UTF-8'
   },
   body: JSON.stringify(data)
-  }).then((res) => res.json()).catch((e) => console.error(e));
+  }).then((res) =>  {
+    loaderContainer.style.display = 'none';
+    return res.json()}).catch((e) => console.error(e));
 }
 function deleteAllCards(){
-  return getCards().then((data) => data.forEach((item) => deleteCard(item.id))).catch((e) => console.error(e));
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return getCards().then((data) => data.forEach((item) => deleteCard(item.id))).then(() => loaderContainer.style.display = 'none').catch((e) => console.error(e));
 }
 function addCard({ title, img, body, id, provider }) {
   const container = document.createElement("div");
@@ -79,7 +110,6 @@ function addCard({ title, img, body, id, provider }) {
   container.append(buttonContainer);
   return container;
 }
-
 function setup() {
   const data = {
     "id": 1,
@@ -149,7 +179,13 @@ function deleteItem(id) {
   deleteCard(id);
   card.remove();
 }
-getCards().then((res) => res.map((item) => cardsContainer.append(addCard(item))));
+getInfo().then((res) => {
+  const headerInfo = document.querySelector('.header__info');
+  headerInfo.innerHTML = `${res.group} ${res.name} <a href=${res.repo} target="_blank">${res.repo}</a>`
+})
+getCards().then((res) => {
+  return res.map((item) => cardsContainer.append(addCard(item)))
+});
 const setupButton = document.querySelector(".setup");
 const form = document.querySelector(".main-page .add-form");
 setupButton.addEventListener("click", (e) => {
@@ -169,8 +205,4 @@ form.addEventListener("submit", (evt) => {
     inputs.forEach((item) => (item.value = ""));
     textarea.value = "";
   }
-});
-const loaderContainer = document.querySelector('.loader-container');
-window.addEventListener('load', () => {
-  loaderContainer.style.display = 'none';
 });
