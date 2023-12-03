@@ -8,7 +8,7 @@
         "test": "mocha ./task3/src",
         "prepare": "husky install",
         "prettier": "prettier -w .",
-        "server:start": "json-server --watch db.json",
+        "server:start": "json-server --watch task4/db.json",
         "prettier:check": "prettier -c ."
     },
     "license": "ISC",
