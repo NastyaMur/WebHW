@@ -1,4 +1,68 @@
 let isEdit = false;
+const cardsContainer = window.document.querySelector(".main-page_cards");
+const loaderContainer = document.querySelector('.loader-container');
+function getInfo(){
+  return fetch('http://localhost:3000/creatorInfo').then((res) => res.json()).catch((e) => console.error(e));
+}
+function getCard(id){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return fetch(`http://localhost:3000/items/${id}`).then((res) => {
+    loaderContainer.style.display = 'none';
+    return res.json()})
+}
+function getCards(){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return fetch('http://localhost:3000/items').then((res) => {
+    loaderContainer.style.display = 'none';
+    return res.json()}
+    )
+}
+function createCard(data){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return fetch('http://localhost:3000/items', {
+    method:'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+  },
+  body:JSON.stringify(data)
+  }).then((res) => {
+    loaderContainer.style.display = 'none';
+    return res.json()}).catch((e) => console.error(e));
+}
+function deleteCard(id){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return fetch(`http://localhost:3000/items/${id}`,{
+    method: 'DELETE'
+  }).then(() => loaderContainer.style.display = 'none').catch((e) => console.error(e));
+}
+function editCard(data){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return fetch(`http://localhost:3000/items/${data.id}`, {
+    method:'PATCH',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+  },
+  body: JSON.stringify(data)
+  }).then((res) =>  {
+    loaderContainer.style.display = 'none';
+    return res.json()}).catch((e) => console.error(e));
+}
+function deleteAllCards(){
+  if(loaderContainer.style.display !== 'flex'){
+    loaderContainer.style.display = 'flex'
+  }
+  return getCards().then((data) => data.forEach((item) => deleteCard(item.id))).then(() => loaderContainer.style.display = 'none').catch((e) => console.error(e));
+}
 function addCard({ title, img, body, id, provider }) {
   const container = document.createElement("div");
   container.classList.add("main-page_cards__card");
@@ -23,7 +87,7 @@ function addCard({ title, img, body, id, provider }) {
   const editBtn = document.createElement("button");
   editBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    editItem({ title, img, body, id, provider });
+    getCard(id).then((res) => editItem(res));
   });
   editBtn.append(document.createTextNode("Edit"));
   const deleteBtn = document.createElement("button");
@@ -47,12 +111,20 @@ function addCard({ title, img, body, id, provider }) {
   return container;
 }
 function setup() {
-  window.localStorage.clear();
-  window.location.reload();
+  const data = {
+    "id": 1,
+    "title": "Firt item",
+    "body": "Крутой айтем",
+    "img": "https://sun9-9.userapi.com/impg/0sALSBNn1UiE2p2x1Fw68lL4M56hxISRHjlhUQ/I74shcNHPTo.jpg?size=500x471&quality=95&sign=f8b7fbdf7b50cec1538266e4ab4c4f8b&type=album",
+    "code": "1",
+    "provider": "ООО ТрансОбщажный сервис"
+  };
+  deleteAllCards().then(() => createCard(data).then(() => window.location.reload()));
 }
 function addItem(item) {
   const cardsContainer = window.document.querySelector(".main-page_cards");
   cardsContainer.append(addCard(item));
+  createCard(item);
 }
 function editItem(data) {
   isEdit = true;
@@ -72,18 +144,10 @@ function editItem(data) {
         provider: "Поставщик",
         id: "Код товара",
       };
-      const cards = JSON.parse(window.localStorage.getItem("cards"));
       const obj = {};
       inputs.forEach((item) => (obj[item.id] = item.value));
       obj.body = textarea.value;
-      let indexOf = -1;
-      cards.forEach((item, index) => {
-        if (+obj.id === item.id) {
-          indexOf = index;
-        }
-      });
-      cards[indexOf] = obj;
-      window.localStorage.setItem("cards", JSON.stringify(cards));
+      editCard(obj);
       inputs.forEach((item) => (item.value = ""));
       textarea.value = "";
       button.textContent = "Добавить";
@@ -103,59 +167,40 @@ function editItem(data) {
             }`)
       );
       cardImg.src = obj.img;
+      document.getElementById(data.id).id = obj.id;
       isEdit = false;
     },
-    { once: true }
+    {once:true}
   );
 }
 function deleteItem(id) {
   const cards = window.document.querySelector(".main-page_cards");
-  const cardsStorage = JSON.parse(window.localStorage.getItem("cards"));
   const card = cards.querySelector(`[id="${id}"]`);
-  const newCards = cardsStorage.filter((item) => item.id !== id);
-  window.localStorage.setItem("cards", JSON.stringify(newCards));
+  deleteCard(id);
   card.remove();
 }
-document.addEventListener("DOMContentLoaded", function () {
-  const cards = JSON.parse(window.localStorage.getItem("cards"));
-  const cardsContainer = window.document.querySelector(".main-page_cards");
-  if (cards) {
-    cards.map((item) => cardsContainer.append(addCard(item)));
-  } else {
-    const cards = [
-      {
-        title: "TestName1",
-        img: "https://sun9-9.userapi.com/impg/0sALSBNn1UiE2p2x1Fw68lL4M56hxISRHjlhUQ/I74shcNHPTo.jpg?size=500x471&quality=95&sign=f8b7fbdf7b50cec1538266e4ab4c4f8b&type=album",
-        body: "Класс",
-        id: 1,
-        provider: "Dog",
-      },
-      {
-        title: "TestName2",
-        img: "https://sun9-9.userapi.com/impg/0sALSBNn1UiE2p2x1Fw68lL4M56hxISRHjlhUQ/I74shcNHPTo.jpg?size=500x471&quality=95&sign=f8b7fbdf7b50cec1538266e4ab4c4f8b&type=album",
-        body: "Класс2",
-        id: 2,
-        provider: "Dog 2",
-      },
-    ];
-    cards.map((item) => cardsContainer.append(addCard(item)));
-    window.localStorage.setItem("cards", JSON.stringify(cards));
-  }
+getInfo().then((res) => {
+  const headerInfo = document.querySelector('.header__info');
+  headerInfo.innerHTML = `${res.group} ${res.name} <a href=${res.repo} target="_blank">${res.repo}</a>`
+})
+getCards().then((res) => {
+  return res.map((item) => cardsContainer.append(addCard(item)))
 });
 const setupButton = document.querySelector(".setup");
 const form = document.querySelector(".main-page .add-form");
-setupButton.addEventListener("click", setup);
+setupButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  setup();
+});
 form.addEventListener("submit", (evt) => {
   evt.preventDefault();
   if (!isEdit) {
-    const cards = JSON.parse(window.localStorage.getItem("cards"));
     const obj = {};
     const inputs = evt.target.querySelectorAll("input");
     const textarea = evt.target.querySelector("textarea");
     inputs.forEach((item) => (obj[item.id] = item.value));
+    obj.id = +obj.id;
     obj.body = textarea.value;
-    cards.push(obj);
-    window.localStorage.setItem("cards", JSON.stringify(cards));
     addItem(obj);
     inputs.forEach((item) => (item.value = ""));
     textarea.value = "";

@@ -8,8 +8,11 @@
     <link rel ="stylesheet" href ="./src/normalize.css">
 </head>
 <body>
+    <div class="loader-container" style="display: flex;">
+        <div class="spinner"></div>
+    </div>
     <div class="header">
-        <p>6408 Анастасия Муравьева</p>
+        <p class="header__info"></p>
         <div>
             <button class="setup">Засетапить дефолтные значения</button>
         </div>
@@ -23,11 +26,12 @@
                 <textarea placeholder="Описание" id="body"></textarea>
                 <input type="text" placeholder="Код товара" id="id">
                 <input type="text" placeholder="Поставщик" id="provider">
-                <button class="add-button">Добавить</button>
+                <button class="add-button" type="submit">Добавить</button>
             </form>
         </div>
+        
         <div class="main-page_cards">
-
+            
         </div>
     </div>
     <script type="module" src = "./src/index.js"></script>

@@ -17,6 +17,7 @@
   background-color: rgba(217, 217, 217, 1);
   align-items: center;
 }
+
 button {
   width: 278px;
   height: 44px;
@@ -79,3 +80,29 @@ button:hover{
   .main-page_cards__buttons{
     display: flex;
   }
+  .spinner {
+    width: 64px;
+    height: 64px;
+    border: 8px solid;
+    border-color: #3d5af1 transparent #3d5af1 transparent;
+    border-radius: 50%;
+    animation: spin-anim 2s linear infinite;
+    
+}
+
+@keyframes spin-anim {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.loader-container {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+}

@@ -16,3 +16,5 @@
 ![Alt text](image-5.png)
 
 А, ну и при обновлении страницы все остается, так как из localStorage подгружается.
+
+ЗАПУСК СЕРВЕРА - json-server --watch db.json
